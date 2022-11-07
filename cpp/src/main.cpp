@@ -13,11 +13,6 @@ double bishop(const string &model)
     return 0.0;
 }
 
-int add(int i, int j)
-{
-    return i + j;
-}
-
 namespace py = pybind11;
 
 PYBIND11_MODULE(pstab, m)
@@ -31,29 +26,13 @@ PYBIND11_MODULE(pstab, m)
         .. autosummary::
            :toctree: _generate
 
-           add
-           subtract
+           bishop           
     )pbdoc";
 
-    m.def("add", &add, R"pbdoc(
-        Add two numbers
-
-        Some other explanation about the add function.
-    )pbdoc");
-
-    m.def("bishop", &bishop, R"pbdoc(
+        m.def("bishop", &bishop, R"pbdoc(
         Calculate the Bishop safety factor from the given model
 
         Some other explanation about the bishop function.
-    )pbdoc");
-
-    m.def(
-        "subtract", [](int i, int j)
-        { return i - j; },
-        R"pbdoc(
-        Subtract two numbers
-
-        Some other explanation about the subtract function.
     )pbdoc");
 
 #ifdef VERSION_INFO

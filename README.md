@@ -13,20 +13,20 @@ python_example
 
 [gitter-badge]:            https://badges.gitter.im/pybind/Lobby.svg
 [gitter-link]:             https://gitter.im/pybind/Lobby
-[actions-badge]:           https://github.com/pybind/python_example/workflows/Tests/badge.svg
-[actions-conda-link]:      https://github.com/pybind/python_example/actions?query=workflow%3A%22Conda
-[actions-conda-badge]:     https://github.com/pybind/python_example/workflows/Conda/badge.svg
-[actions-pip-link]:        https://github.com/pybind/python_example/actions?query=workflow%3A%22Pip
-[actions-pip-badge]:       https://github.com/pybind/python_example/workflows/Pip/badge.svg
-[actions-wheels-link]:     https://github.com/pybind/python_example/actions?query=workflow%3AWheels
-[actions-wheels-badge]:    https://github.com/pybind/python_example/workflows/Wheels/badge.svg
-[travis-link]:             https://travis-ci.org/pybind/python_example
-[travis-badge]:            https://travis-ci.org/pybind/python_example.svg?branch=master&status=passed
-[appveyor-link]:           https://ci.appveyor.com/project/wjakob/python-example
+[actions-badge]:           https://github.com/breinbaas/pstab/workflows/Tests/badge.svg
+[actions-conda-link]:      https://github.com/breinbaas/pstab/actions?query=workflow%3A%22Conda
+[actions-conda-badge]:     https://github.com/breinbaas/pstab/workflows/Conda/badge.svg
+[actions-pip-link]:        https://github.com/breinbaas/pstab/actions?query=workflow%3A%22Pip
+[actions-pip-badge]:       https://github.com/breinbaas/pstab/workflows/Pip/badge.svg
+[actions-wheels-link]:     https://github.com/breinbaas/pstab/actions?query=workflow%3AWheels
+[actions-wheels-badge]:    https://github.com/breinbaas/pstab/workflows/Wheels/badge.svg
+[travis-link]:             https://travis-ci.org/breinbaas/pstab
+[travis-badge]:            https://travis-ci.org/breinbaas/pstab.svg?branch=master&status=passed
+[appveyor-link]:           https://ci.appveyor.com/project/breinbaas/python-pstab
 <!-- TODO: get a real badge link for appveyor -->
-[appveyor-badge]:          https://travis-ci.org/pybind/python_example.svg?branch=master&status=passed
+[appveyor-badge]:          https://travis-ci.org/breinbaas/pstab.svg?branch=master&status=passed
 
-An example project built with [pybind11](https://github.com/pybind/pybind11).
+A package to calculate slope stability safety factors.
 This requires Python 3.7+; for older versions of Python, check the commit
 history.
 
@@ -34,7 +34,7 @@ Installation
 ------------
 
  - clone this repository
- - `pip install ./python_example`
+ - `pip install ./pstab`
 
 CI Examples
 -----------
@@ -68,8 +68,8 @@ Test call
 ---------
 
 ```python
-import python_example
-python_example.add(1, 2)
+import pstab
+pstab.bishop("TODO")
 ```
 
 [`cibuildwheel`]:          https://cibuildwheel.readthedocs.io
