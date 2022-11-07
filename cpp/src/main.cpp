@@ -12,12 +12,12 @@
 
 double bishop(const std::string &model)
 {
+    // for now read a test file
     std::ifstream file("./model.json");
     std::stringstream buffer{};
     buffer << file.rdbuf();
 
-    // buffer.str() contains the input
-
+    // create a document using rapidjson
     rapidjson::Document document;
     document.Parse(buffer.str().c_str());
 
