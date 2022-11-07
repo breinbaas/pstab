@@ -1,15 +1,26 @@
 #include <pybind11/pybind11.h>
-#include <clipper2/clipper.core.h>
-#include <rapidjson/document.h>
+#include "rapidjson/document.h"
 #include <string>
+#include <fstream>
+#include <sstream>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
-using namespace std;
+// using namespace std;
+// using namespace rapidjson;
 
-double bishop(const string &model)
+double bishop(const std::string &model)
 {
+    std::ifstream file("./model.json");
+    std::stringstream buffer{};
+    buffer << file.rdbuf();
+
+    // buffer.str() contains the input
+
+    rapidjson::Document document;
+    document.Parse(buffer.str().c_str());
+
     return 0.0;
 }
 
@@ -29,7 +40,7 @@ PYBIND11_MODULE(pstab, m)
            bishop           
     )pbdoc";
 
-        m.def("bishop", &bishop, R"pbdoc(
+    m.def("bishop", &bishop, R"pbdoc(
         Calculate the Bishop safety factor from the given model
 
         Some other explanation about the bishop function.
