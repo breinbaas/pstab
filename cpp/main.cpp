@@ -80,13 +80,13 @@ struct BishopModel
 This function will calculate the Bishop safety factor for the given
 model, centerpoint of the slope circle and z coordinate of the tangent line
 */
-double sf_bishop(const int i, const BishopModel &model, double mx, double mz, double z_tangent)
+double sf_bishop(const int i, const BishopModel &model, double mx, double mz, double z_tangent, double *sf)
 {
     double r = mz - z_tangent;
     cout << "starting thread" << i << endl;
     this_thread::sleep_for(chrono::milliseconds(1000));
     cout << "ending thread" << i << endl;
-    return 0.0;
+    *sf = 1.0;
 }
 
 /*
@@ -210,7 +210,7 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
                 double z = model.bishop_search_grid.bottom + nz * dz;
                 double t = model.bishop_search_grid.tangents_bottom + nt * dt;
 
-                threads[i] = thread(sf_bishop, i, model, x, z, t);
+                threads[i] = thread(sf_bishop, i, model, x, z, t, &sfs[i]);
 
                 ++i;
             }
@@ -226,6 +226,11 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;
     std::cout << "Elapsed time " << elapsed.count() << " ms\n";
+
+    for (auto &sf : sfs)
+    {
+        std::cout << "sf =" << sf << endl;
+    }
 
     return {};
 }
