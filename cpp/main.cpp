@@ -1,5 +1,6 @@
-// #include <pybind11/pybind11.h>
-#include "include/rapidjson/document.h"
+// #include <pybind11/pybind11.h> // should be added once we start working on the python part
+// #include "rapidjson/document.h" // should be added once we start working on the python part
+#include "include/rapidjson/document.h" // ugly temp fix (include/) to allow development in cpp folder
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -9,7 +10,7 @@
 #include <thread>
 #include <future>
 
-#include <chrono>
+#include <chrono> // temporay to allow performance measurements
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -240,6 +241,8 @@ int main()
     vector<double> sfs = calculate_bishop(); // will become calculate_bishop("jsonstring");
 }
 
+// THE NEXT CODE IS COMMENTED SINCE I USE THIS AS A CPP PROJECT FIRST
+// ONCE THIS IS DONE IT WILL BE PART OF THE PYTHON LIBRARY CODE
 // namespace py = pybind11;
 
 // PYBIND11_MODULE(pstab, m)
