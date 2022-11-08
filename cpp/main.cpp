@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -12,6 +13,14 @@
 using namespace std;
 using namespace rapidjson;
 
+// These are the default number of circles in x direction, z direction and
+// the number of tangent lines, they should have a value of at least 2
+const int NUM_X = 2; // at least 2
+const int NUM_Z = 2;
+const int NUM_T = 2;
+
+// Structures to save the data
+// Soil information
 struct Soil
 {
     string code;
@@ -22,23 +31,27 @@ struct Soil
     double friction_angle;
 };
 
+// Point information
 struct Point
 {
     double x;
     double z;
 };
 
+// The soilpolygons from the model
 struct SoilPolygon
 {
     vector<Point> points;
     string soilcode;
 };
 
+// The xz coordinates of the phreatic line
 struct PhreaticLine
 {
     vector<Point> points;
 };
 
+// The definition of the Bishop search grid
 struct BishopSearchGrid
 {
     double left;
@@ -50,6 +63,7 @@ struct BishopSearchGrid
     double minimum_slip_plane_length;
 };
 
+// One model to rule them all
 struct BishopModel
 {
     vector<Soil> soils;
@@ -58,11 +72,21 @@ struct BishopModel
     PhreaticLine phreatic_line;
 };
 
-double sf_bishop(const BishopModel &model, double mx, double mz, double r)
+/*
+This function will calculate the Bishop safety factor for the given
+model, centerpoint of the slope circle and z coordinate of the tangent line
+*/
+double sf_bishop(const BishopModel &model, double mx, double mz, double z_tangent)
 {
+    double r = mz - z_tangent;
+
     return 0.0;
 }
 
+/*
+This function will parse a json string from the typical leveelogic calculation model
+and create a BishopModel structure to pass to the actual calculation
+*/
 BishopModel parse_bishop_model(const string &json)
 {
     // create a document using rapidjson
@@ -146,10 +170,6 @@ BishopModel parse_bishop_model(const string &json)
     };
 }
 
-const int NUM_X = 2; // at least 2
-const int NUM_Z = 2;
-const int NUM_T = 2;
-
 vector<double> calculate_bishop() // will become calculate_bishop(const string &json)
 {
     // for now we skip the given string and read a test file
@@ -158,6 +178,7 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
     buffer << file.rdbuf();
     string json = buffer.str();
 
+    // get the model from the string
     BishopModel model = parse_bishop_model(json);
 
     double x = model.bishop_search_grid.left;
@@ -166,6 +187,7 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
     double dz = model.bishop_search_grid.height / double(NUM_Z - 1);
     double dt = (model.bishop_search_grid.tangents_top - model.bishop_search_grid.tangents_bottom) / double(NUM_T - 1);
 
+    // iterate over the possible slope circle locations
     for (int nx = 0; nx < NUM_X; ++nx)
     {
         for (int nz = 0; nz < NUM_Z; ++nz)
@@ -175,6 +197,8 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
                 double x = model.bishop_search_grid.left + nx * dx;
                 double z = model.bishop_search_grid.bottom + nz * dz;
                 double t = model.bishop_search_grid.tangents_bottom + nt * dt;
+
+                // thread sf_bishop(model, x, z, t);
                 cout << x << "\t" << z << "\t" << t << endl;
             }
         }
