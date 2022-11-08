@@ -210,8 +210,7 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
                 double z = model.bishop_search_grid.bottom + nz * dz;
                 double t = model.bishop_search_grid.tangents_bottom + nt * dt;
 
-                threads[i] = thread([=]
-                                    { sf_bishop(i, model, x, z, t); });
+                threads[i] = thread(sf_bishop, i, model, x, z, t);
 
                 ++i;
             }
