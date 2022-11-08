@@ -41,26 +41,33 @@ struct PhreaticLine
 
 struct BishopSearchGrid
 {
-    float x_left;
-    float z_bottom;
-    float width;
-    float height;
-    float tangents_top;
-    float tangents_bottom;
-    float minimum_slip_plane_length;
+    double left;
+    double bottom;
+    double width;
+    double height;
+    double tangents_top;
+    double tangents_bottom;
+    double minimum_slip_plane_length;
 };
 
-double bishop(const string &model)
+struct BishopModel
 {
-    // for now read a test file
-    ifstream file("./test/model.json");
-    stringstream buffer{};
-    buffer << file.rdbuf();
+    vector<Soil> soils;
+    vector<SoilPolygon> soil_polygons;
+    BishopSearchGrid bishop_search_grid;
+    PhreaticLine phreatic_line;
+};
 
+double sf_bishop(const BishopModel &model, double mx, double mz, double r)
+{
+    return 0.0;
+}
+
+BishopModel parse_bishop_model(const string &json)
+{
     // create a document using rapidjson
     Document document;
-    string json = buffer.str();
-    document.Parse(buffer.str().c_str()); // will become: document.Parse(model.c_str());
+    document.Parse(json.c_str());
     assert(document.IsObject());
 
     // PARSE SOILCOLLECTION
@@ -113,17 +120,17 @@ double bishop(const string &model)
 
     // PARSE BISHOP SEARCH GRID
     Value &v_bishop_search_grid = document["bishop_search_grid"];
-    float x_left = v_bishop_search_grid["x_left"].GetDouble();
-    float z_bottom = v_bishop_search_grid["z_bottom"].GetDouble();
-    float width = v_bishop_search_grid["width"].GetDouble();
-    float height = v_bishop_search_grid["height"].GetDouble();
-    float tangents_top = v_bishop_search_grid["tangents_top"].GetDouble();
-    float tangents_bottom = v_bishop_search_grid["tangents_bottom"].GetDouble();
-    float minimum_slip_plane_length = v_bishop_search_grid["minimum_slip_plane_length"].GetDouble();
+    double left = v_bishop_search_grid["x_left"].GetDouble();
+    double bottom = v_bishop_search_grid["z_bottom"].GetDouble();
+    double width = v_bishop_search_grid["width"].GetDouble();
+    double height = v_bishop_search_grid["height"].GetDouble();
+    double tangents_top = v_bishop_search_grid["tangents_top"].GetDouble();
+    double tangents_bottom = v_bishop_search_grid["tangents_bottom"].GetDouble();
+    double minimum_slip_plane_length = v_bishop_search_grid["minimum_slip_plane_length"].GetDouble();
 
     BishopSearchGrid bishop_search_grid = BishopSearchGrid{
-        x_left,
-        z_bottom,
+        left,
+        bottom,
         width,
         height,
         tangents_top,
@@ -131,12 +138,54 @@ double bishop(const string &model)
         minimum_slip_plane_length,
     };
 
-    return 0.0;
+    return BishopModel{
+        soils,
+        soilpolygons,
+        bishop_search_grid,
+        phreatic_line,
+    };
+}
+
+const int NUM_X = 2; // at least 2
+const int NUM_Z = 2;
+const int NUM_T = 2;
+
+vector<double> calculate_bishop() // will become calculate_bishop(const string &json)
+{
+    // for now we skip the given string and read a test file
+    ifstream file("./test/model.json");
+    stringstream buffer{};
+    buffer << file.rdbuf();
+    string json = buffer.str();
+
+    BishopModel model = parse_bishop_model(json);
+
+    double x = model.bishop_search_grid.left;
+    double z = model.bishop_search_grid.bottom;
+    double dx = model.bishop_search_grid.width / double(NUM_X - 1);
+    double dz = model.bishop_search_grid.height / double(NUM_Z - 1);
+    double dt = (model.bishop_search_grid.tangents_top - model.bishop_search_grid.tangents_bottom) / double(NUM_T - 1);
+
+    for (int nx = 0; nx < NUM_X; ++nx)
+    {
+        for (int nz = 0; nz < NUM_Z; ++nz)
+        {
+            for (int nt = 0; nt < NUM_T; ++nt)
+            {
+                double x = model.bishop_search_grid.left + nx * dx;
+                double z = model.bishop_search_grid.bottom + nz * dz;
+                double t = model.bishop_search_grid.tangents_bottom + nt * dt;
+                cout << x << "\t" << z << "\t" << t << endl;
+            }
+        }
+    }
+
+    return {};
 }
 
 int main()
 {
-    cout << bishop(" ");
+    vector<double> sfs = calculate_bishop(); // will become calculate_bishop("jsonstring");
 }
 
 // namespace py = pybind11;
