@@ -5,7 +5,11 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <array>
 #include <thread>
+#include <future>
+
+#include <chrono>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -76,10 +80,12 @@ struct BishopModel
 This function will calculate the Bishop safety factor for the given
 model, centerpoint of the slope circle and z coordinate of the tangent line
 */
-double sf_bishop(const BishopModel &model, double mx, double mz, double z_tangent)
+double sf_bishop(const int i, const BishopModel &model, double mx, double mz, double z_tangent)
 {
     double r = mz - z_tangent;
-
+    cout << "starting thread" << i << endl;
+    this_thread::sleep_for(chrono::milliseconds(1000));
+    cout << "ending thread" << i << endl;
     return 0.0;
 }
 
@@ -187,7 +193,13 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
     double dz = model.bishop_search_grid.height / double(NUM_Z - 1);
     double dt = (model.bishop_search_grid.tangents_top - model.bishop_search_grid.tangents_bottom) / double(NUM_T - 1);
 
-    // iterate over the possible slope circle locations
+    // temporary code to measure performance
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // iterate over the possible slope circle locations, multithreaded
+    array<thread, NUM_T * NUM_X * NUM_Z> threads;
+    array<double, NUM_T * NUM_X * NUM_Z> sfs;
+    int i = 0;
     for (int nx = 0; nx < NUM_X; ++nx)
     {
         for (int nz = 0; nz < NUM_Z; ++nz)
@@ -198,11 +210,23 @@ vector<double> calculate_bishop() // will become calculate_bishop(const string &
                 double z = model.bishop_search_grid.bottom + nz * dz;
                 double t = model.bishop_search_grid.tangents_bottom + nt * dt;
 
-                // thread sf_bishop(model, x, z, t);
-                cout << x << "\t" << z << "\t" << t << endl;
+                threads[i] = thread([=]
+                                    { sf_bishop(i, model, x, z, t); });
+
+                ++i;
             }
         }
     }
+
+    for (auto &t : threads)
+    {
+        t.join();
+    }
+
+    // temporary code to measure performance
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed = end - start;
+    std::cout << "Elapsed time " << elapsed.count() << " ms\n";
 
     return {};
 }
