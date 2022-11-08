@@ -51,7 +51,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "python_example"
+project = "pstab"
 copyright = "2016, Sylvain Corlay"
 author = "Sylvain Corlay"
 

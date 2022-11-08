@@ -17,20 +17,22 @@ __version__ = "0.0.1"
 #   reproducible builds (https://github.com/pybind/python_example/pull/53)
 
 ext_modules = [
-    Pybind11Extension("python_example",
-        ["src/main.cpp"],
+    Pybind11Extension(
+        "pstab",
+        ["cpp/src/main.cpp"],
+        include_dirs=["cpp/include"],
         # Example: passing in the version to the compiled code
-        define_macros = [('VERSION_INFO', __version__)],
-        ),
+        define_macros=[("VERSION_INFO", __version__)],
+    ),
 ]
 
 setup(
-    name="python_example",
+    name="pstab",
     version=__version__,
-    author="Sylvain Corlay",
-    author_email="sylvain.corlay@gmail.com",
-    url="https://github.com/pybind/python_example",
-    description="A test project using pybind11",
+    author="Rob van Putten",
+    author_email="breinbaasnl@gmail.com",
+    url="https://github.com/breinbaas/pstab",
+    description="Slope Stability calculations using Python with C++ bindings",
     long_description="",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
